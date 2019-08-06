@@ -80,4 +80,5 @@
     7. Search all document inside index health 
         http://esearch-sfcies.eng.sfdc.net:9200/health/_search/?size=5
     8. List all index on instance 
+Test change
         http://esearch-sfcies.eng.sfdc.net:9200/_cat/indices?v
