@@ -1,6 +1,6 @@
 @Library('sfci-pipeline-sharedlib@soma-github') _
 
-def pipelineTriggerCron = { pollSCM('*/2 * * * *') }
+def pipelineTriggerCron = { pollSCM('H/2 * * * *') }
 executePipeline([pipelineTriggerCron: pipelineTriggerCron]){
         stage('Initialization'){
                 mavenInit([gitCredsId: 'soma-github'])
