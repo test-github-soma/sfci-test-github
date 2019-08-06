@@ -1,0 +1,41 @@
+@Library('sfci-pipeline-sharedlib@grover') _
+//@Library('sfci-pipeline-sharedlib@grover-dev') _
+//@Library('sfci-pipeline-sharedlib@master') _
+
+
+env.SHARE_LIB_VERSION = 'v1'
+env.RELEASE_BRANCHES = ['master']
+env.RELEASE = true
+
+//Scheduling this job to execute every 45 mins
+def pipelineTriggerCron = { cron('H/10 * * * *') }
+
+def envDef = [
+        emailTo: 'jitender.kumar@salesforce.com',
+        stopSuccessEmail: true,
+        maxDaysToKeepBuild: 7,
+        //pipelineTriggerCron: pipelineTriggerCron,
+        disableConcurrentBuilds: true
+]
+
+
+executePipeline(envDef) {
+    mavenInit([githubCredsId: "jitu"])
+    checkout scm
+  //mavenReleasePrepare()
+    mavenDockerReleaseBuild()
+   // mavenDockerP2PStage([p2p_service_url:'https://stage-sfci-p2p-1.dop.sfdc.net'])
+       
+        
+  //mavenDockerReleaseBuild([dockerCredsId:'t_docker',dockerfile: 'Dockerfile', buildargs: [version: 'version']])
+  //mavenDockerP2PStage([dockerCredsId:'t_docker'])
+   // mavenDockerP2PPromote([p2p_service_url:'https://stage-sfci-p2p-1.dop.sfdc.net'])
+        
+        //p2p Prod env
+        // mavenDockerP2PStage([p2p_service_url:'https://sfci-p2p-0.dop.sfdc.net'])
+        // mavenDockerP2PPromote([p2p_service_url:'https://sfci-p2p-0.dop.sfdc.net'])
+        
+        //p2p Stage env
+         mavenDockerP2PStage([p2p_service_url:'https://stage-sfci-p2p-1.dop.sfdc.net'])
+         mavenDockerP2PPromote([p2p_service_url:'https://stage-sfci-p2p-1.dop.sfdc.net',copy_docker_artifacts_to_gcp_repo:true])
+}
